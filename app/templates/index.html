@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoGoCommBox - File Sharing</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-box-open"></i> GoGoCommBox</h1>
+            <p>Simple file sharing for your network</p>
+        </header>
+        
+        <main>
+            <div class="file-list-container">
+                <div class="file-list-header">
+                    <h2>Available Files</h2>
+                    <div class="file-count">{{ len .Files }} items</div>
+                </div>
+                
+                {{ if eq (len .Files) 0 }}
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No files found in the GoGoFiles directory</p>
+                    <small>Place files in the GoGoFiles folder to share them</small>
+                </div>
+                {{ else }}
+                <div class="file-list">
+                    <div class="file-list-row header">
+                        <div class="file-name">Name</div>
+                        <div class="file-size">Size</div>
+                        <div class="file-modified">Last Modified</div>
+                        <div class="file-actions">Actions</div>
+                    </div>
+                    
+                    {{ range .Files }}
+                    <div class="file-list-row">
+                        <div class="file-name">
+                            {{ if .IsDir }}
+                            <i class="fas fa-folder"></i>
+                            {{ else }}
+                            <i class="fas fa-file"></i>
+                            {{ end }}
+                            <span>{{ .Name }}</span>
+                        </div>
+                        <div class="file-size">
+                            {{ if .IsDir }}
+                            -
+                            {{ else }}
+                            {{ formatBytes .Size }}
+                            {{ end }}
+                        </div>
+                        <div class="file-modified">{{ .LastModified }}</div>
+                        <div class="file-actions">
+                            <a href="/files/{{ .Name }}" class="btn download-btn" title="Download" target="_blank">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <button class="btn copy-btn" data-url="{{ $.BaseURL }}/files/{{ .Name }}" title="Copy URL">
+                                <i class="fas fa-clipboard"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+                {{ end }}
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 GoGoCommBox</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-clipboard-check"></i> URL copied to clipboard!
+    </div>
+    
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>

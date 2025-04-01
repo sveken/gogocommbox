@@ -1,0 +1,255 @@
+/* Base styles */
+:root {
+  --primary-color: #4a6fa5;
+  --primary-dark: #344e7c;
+  --secondary-color: #6c757d;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --border-color: #dee2e6;
+  --shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+  --transition: all 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: var(--dark-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  color: var(--secondary-color);
+}
+
+/* Main content */
+main {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* File list */
+.file-list-container {
+  padding: 1.5rem;
+}
+
+.file-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.file-list-header h2 {
+  color: var(--primary-dark);
+}
+
+.file-count {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+}
+
+.file-list {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.file-list-row {
+  display: grid;
+  grid-template-columns: 3fr 1fr 2fr 1fr;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.file-list-row:last-child {
+  border-bottom: none;
+}
+
+.file-list-row:not(.header):hover {
+  background-color: rgba(74, 111, 165, 0.05);
+}
+
+.file-list-row.header {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: var(--secondary-color);
+}
+
+.file-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-name i {
+  color: var(--primary-color);
+  font-size: 1.25rem;
+  width: 24px;
+  text-align: center;
+}
+
+.file-name i.fa-folder {
+  color: #ffc107;
+}
+
+.file-size, .file-modified {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  border: none;
+  background: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--secondary-color);
+  transition: var(--transition);
+}
+
+.btn:hover {
+  background-color: #f5f5f5;
+  color: var(--primary-color);
+}
+
+.download-btn:hover {
+  color: var(--success-color);
+}
+
+.copy-btn:hover {
+  color: var(--primary-color);
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  font-size: 1.25rem;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state small {
+  color: var(--secondary-color);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  color: var(--secondary-color);
+  font-size: 0.875rem;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .file-list-row {
+    grid-template-columns: 2fr 1fr;
+    gap: 0.5rem;
+  }
+  
+  .file-list-row.header {
+    display: none;
+  }
+  
+  .file-list-row {
+    padding: 1rem;
+  }
+  
+  .file-name {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+  }
+  
+  .file-size, .file-modified {
+    font-size: 0.75rem;
+  }
+  
+  .file-actions {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
