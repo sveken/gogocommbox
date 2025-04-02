@@ -6,6 +6,41 @@
     <title>GoGoCommBox - File Sharing</title>
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom styles for the warning banner */
+        .warning-banner {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .warning-banner i {
+            font-size: 1.5rem;
+        }
+        .warning-banner .warning-content {
+            flex: 1;
+        }
+        .warning-banner h3 {
+            margin-bottom: 0.5rem;
+        }
+        .warning-banner ul {
+            margin-top: 0.5rem;
+            margin-left: 1.5rem;
+        }
+        .warning-banner a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .warning-banner a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -15,6 +50,24 @@
         </header>
         
         <main>
+            {{ if .IsLocalhost }}
+            <div class="warning-banner">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="warning-content">
+                    <h3>You're using localhost!</h3>
+                    <p>
+                        Using localhost means that any links you share will <strong>only work on this computer</strong>.
+                        For sharing with other devices on your network, please use one of your network IP addresses instead:
+                    </p>
+                    <ul>
+                        {{ range .LocalIPs }}
+                        <li><a href="http://{{ . }}:8082" target="_blank">http://{{ . }}:8082</a></li>
+                        {{ end }}
+                    </ul>
+                </div>
+            </div>
+            {{ end }}
+            
             <div class="file-list-container">
                 <div class="file-list-header">
                     <h2>Available Files</h2>
@@ -48,7 +101,7 @@
                         </div>
                         <div class="file-size">
                             {{ if .IsDir }}
-                            -
+                            - 
                             {{ else }}
                             {{ formatBytes .Size }}
                             {{ end }}

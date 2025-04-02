@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -80,6 +81,20 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get all local IP addresses
+	localIPs, err := getLocalIPs()
+	if err != nil {
+		log.Printf("Warning: Failed to get local IP addresses: %v", err)
+		localIPs = []string{}
+	}
+
+	// Check if the current host is localhost or 127.0.0.1
+	host := r.Host
+	isLocalhost := false
+	if strings.HasPrefix(host, "localhost") || strings.HasPrefix(host, "127.0.0.1") {
+		isLocalhost = true
+	}
+
 	// Create template functions map
 	funcMap := template.FuncMap{
 		"formatBytes": formatBytes,
@@ -94,11 +109,15 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 
 	baseURL := fmt.Sprintf("http://%s:8082", r.Host)
 	data := struct {
-		Files   []FileInfo
-		BaseURL string
+		Files       []FileInfo
+		BaseURL     string
+		IsLocalhost bool
+		LocalIPs    []string
 	}{
-		Files:   files,
-		BaseURL: baseURL,
+		Files:       files,
+		BaseURL:     baseURL,
+		IsLocalhost: isLocalhost,
+		LocalIPs:    localIPs,
 	}
 
 	err = tmpl.Execute(w, data)
@@ -151,20 +170,34 @@ func createFolderIfNotExist(folderName string) {
 	}
 }
 
-// getLocalIP returns the non-loopback local IP address of the host
-func getLocalIP() (string, error) {
+// getLocalIPs returns the non-loopback local IP addresses of the host
+func getLocalIPs() ([]string, error) {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
+	var ips []string
 	for _, addr := range addrs {
 		if ipNet, ok := addr.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
 			if ipNet.IP.To4() != nil {
-				return ipNet.IP.String(), nil
+				ips = append(ips, ipNet.IP.String())
 			}
 		}
 	}
 
-	return "", fmt.Errorf("no non-loopback address found")
+	if len(ips) == 0 {
+		return nil, fmt.Errorf("no non-loopback address found")
+	}
+
+	return ips, nil
+}
+
+// For backwards compatibility - returns the first IP address
+func getLocalIP() (string, error) {
+	ips, err := getLocalIPs()
+	if err != nil {
+		return "", err
+	}
+	return ips[0], nil
 }
